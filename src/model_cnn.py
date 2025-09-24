@@ -15,9 +15,7 @@ def custom_cnn_model(input_shape, num_classes):
             Conv2D(32, kernel_size = (3,3), padding = 'same', activation = 'relu'),
             MaxPooling2D(pool_size = (2,2), strides = 2, padding = 'valid'),
             Flatten(),
-            Dense(1024, activation = 'relu'),
-            Dense(512, activation = 'relu'),
-            Dense(256, activation = 'relu'),
+            Dense(128, activation = 'relu'),
             Dense(num_classes, activation = 'softmax'),
         ]
     )
