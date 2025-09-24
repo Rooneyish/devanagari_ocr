@@ -5,10 +5,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 class DataLoader:
-    def __init__(self, data_dir, img_size= (32,32), train_size = 0.8, val_size = 0.1, test_size = 0.1, random_state = 42):
+    def __init__(self, data_dir, img_size= (32,32), val_size = 0.1, test_size = 0.1, random_state = 42):
         self.data_dir = data_dir
         self.img_size = img_size
-        self.train_size = train_size
         self.val_size = val_size
         self.test_size = test_size
         self.random_state = random_state
@@ -18,21 +17,31 @@ class DataLoader:
         images = []
         labels = []
 
-        for class_name in sorted(os.listdir(self.data_dir)):
+        classes_found = sorted([d for d in os.listdir(self.data_dir) if os.path.isdir(os.path.join(self.data_dir, d))])
+        print(f"Classes Found: {classes_found}")
+
+        for class_name in classes_found:
             class_path = os.path.join(self.data_dir, class_name)
-            
-            if not os.path.isdir(class_path):
+            img_files = [f for f in os.listdir(class_path) if f.lower().endswith(('.png'))]
+
+            if not img_files:
+                print(f'Imange file not found at {class_path}')
                 continue
 
-            img_files = os.listdir(class_path)
             for img_name in img_files:
                 img_path = os.path.join(class_path, img_name)
                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 if img is None:
+                    print(f'Cant read {img_path}')
                     continue
                 img = cv2.resize(img, self.img_size)
                 images.append(img)
                 labels.append(class_name)
+
+            print(f'{class_name}: {len(img_files)} files is loaded')
+
+        if len(images) == 0:
+            raise ValueError(f"No images loaded from {self.data_dir}. Check paths and image files!")
 
         X = np.array(images, dtype='float32') / 255.0
         X = np.expand_dims(X, -1)
