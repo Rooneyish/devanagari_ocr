@@ -12,7 +12,7 @@ def train():
 
     model = custom_cnn_model(input_shape=X_train.shape[1:], num_classes=len(label_encoder.classes_))
 
-    history=model.fit(X_train, y_train,epochs = 25, batch_size = 64, validation_data = (X_val,y_val))
+    history=model.fit(X_train, y_train,epochs = 100, batch_size = 64, validation_data = (X_val,y_val))
 
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose = 0)
     print(f'Test Accuracy: {test_acc: .4f}, Test Loss = {test_loss: .4f}')

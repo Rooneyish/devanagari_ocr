@@ -1,6 +1,6 @@
 import tensorflow as tf
 import os
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras import models
 from tensorflow.keras.models import Sequential
 from data_loader import DataLoader
@@ -16,6 +16,7 @@ def custom_cnn_model(input_shape, num_classes):
             MaxPooling2D(pool_size = (2,2), strides = 2, padding = 'valid'),
             Flatten(),
             Dense(128, activation = 'relu'),
+            Dropout(0.3),
             Dense(num_classes, activation = 'softmax'),
         ]
     )
@@ -29,10 +30,11 @@ def custom_cnn_model(input_shape, num_classes):
     print('Model saved at experiments folder as model_summary.txt')
 
     model.compile(
-        optimizer = tf.keras.optimizers.Adam(learning_rate = 0.01),
+        optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001),
         loss = 'sparse_categorical_crossentropy',
         metrics = ['accuracy']
     )
+
 
     return model
 
