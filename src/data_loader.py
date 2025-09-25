@@ -59,5 +59,36 @@ class DataLoader:
             X_temp, y_temp, test_size= 1-relative_val_size, random_state=self.random_state, stratify=y_temp
         )
 
+        processed_dir = os.path.join(os.path.dirname(os.path.dirname(self.data_dir)), 'processed')
+        os.makedirs(processed_dir, exist_ok=True)
+        np.save(os.path.join(processed_dir, 'X_train.npy'), X_train)
+        np.save(os.path.join(processed_dir, 'X_val.npy'), X_val)
+        np.save(os.path.join(processed_dir, 'X_test.npy'), X_test)
+        np.save(os.path.join(processed_dir, 'y_train.npy'), y_train)
+        np.save(os.path.join(processed_dir, 'y_val.npy'), y_val)
+        np.save(os.path.join(processed_dir, 'y_test.npy'), y_test)
+        np.save(os.path.join(processed_dir, 'classes.npy'), self.label_encoder.classes_)    
+
+        print(f'Processed Images saved at {processed_dir}')
+
         print(f"Train: {X_train.shape}, Val: {X_val.shape}, Test: {X_test.shape}")
         return X_train, X_val, X_test, y_train, y_val, y_test, self.label_encoder
+
+    def load_processed_data(self):
+        processed_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'processed')
+
+        file_names = ['X_train.npy', 'X_val.npy', 'X_test.npy', 'y_train.npy', 'y_val.npy', 'y_test.npy', 'classes.npy']
+
+        if all(os.path.exists(os.path.join(processed_dir, file)) for file in file_names):
+            X_train = np.load(os.path.join(processed_dir, 'X_train.npy'))
+            X_val = np.load(os.path.join(processed_dir, 'X_val.npy'))
+            X_test = np.load(os.path.join(processed_dir, 'X_test.npy'))
+            y_train = np.load(os.path.join(processed_dir, 'y_train.npy'))
+            y_val = np.load(os.path.join(processed_dir, 'y_val.npy'))
+            y_test = np.load(os.path.join(processed_dir, 'y_test.npy'))
+            classes = np.load(os.path.join(processed_dir, 'classes.npy'))
+        else:
+            loader = DataLoader(data_dir="/home/rooneyish/Documents/projects/devanagiri_ocr/data/raw/Images", img_size=(32,32), val_size= 0.1, test_size=0.1)
+            X_train, X_val, X_test, y_train, y_val, y_test, classes = loader.load_data()
+        
+        return X_train, X_val, X_test, y_train, y_val, y_test, classes
