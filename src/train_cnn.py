@@ -44,5 +44,10 @@ def train():
     plt.savefig(os.path.join(save_dir, "loss_plot.png"))
     plt.close()
 
+
+    model_save_path = os.path.join("/home/rooneyish/Documents/projects/devanagiri_ocr/models/", "cnn_model.keras")
+    model.save(model_save_path)
+    print(f"Model saved in Keras format at: {model_save_path}")
+
 if __name__ == "__main__":
     train()
